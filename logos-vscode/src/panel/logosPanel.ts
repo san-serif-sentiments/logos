@@ -36,7 +36,6 @@ type IncomingMessage =
   | InsertMessagePayload
   | CopyMessagePayload
   | { type: 'ready' };
-type IncomingMessage = ChatMessagePayload | ClearMessagePayload | InsertMessagePayload | { type: 'ready' };
 
 const HISTORY_KEY = 'logos.chatHistory';
 
@@ -149,23 +148,10 @@ export class LogosPanel implements vscode.WebviewViewProvider {
           : undefined,
       });
       assistantResponse = responseText;
-
-    try {
-      await this.router.chat({
-        role: message.role,
-        overrideModel: message.overrideModel,
-        history: this.history.map((entry) => ({ role: entry.role, content: entry.content })),
-        stream: true,
-        onToken: (token) => {
-          assistantResponse += token;
-          this.view?.webview.postMessage({ type: 'chatStream', token });
-        },
-      });
-
     } catch (error) {
       const messageText = error instanceof Error ? error.message : String(error);
       vscode.window.showErrorMessage(`Logos chat failed: ${messageText}`);
-      this.view.webview.postMessage({ type: 'chatError', message: messageText });
+      this.view?.webview.postMessage({ type: 'chatError', message: messageText });
       return;
     }
 
