@@ -40,6 +40,7 @@ npm run compile
 5. **Verify connectivity** – in the dev host, run **Logos: Open Chat**, send a short prompt (e.g., “summarize this file”), and confirm tokens stream in. If nothing appears, check the Output panel for connection guidance.
 6. **Optional tests** – run `npm test` after installing [`@vscode/test-electron`](https://code.visualstudio.com/api/working-with-extensions/testing-extension) to execute the smoke suite.
 
+
 ## Configuration
 
 Open **Settings → Extensions → Logos** or edit your `settings.json`.

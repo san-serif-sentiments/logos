@@ -10,3 +10,8 @@ src/**/*.ts.map
 src/**/*.d.ts
 **/*.tsbuildinfo
 **/*.map
+src/**
+test/**
+scripts/**
+*.ts
+*.map
