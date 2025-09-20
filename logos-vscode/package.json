@@ -1,0 +1,171 @@
+{
+  "name": "logos",
+  "displayName": "Logos",
+  "description": "Interactive partner for code and writing powered by local Ollama models.",
+  "version": "0.1.0",
+  "publisher": "logos-local",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:logos.openChat",
+    "onCommand:logos.reviewSelection",
+    "onCommand:logos.refactorSelection",
+    "onCommand:logos.explainSelection",
+    "onCommand:logos.generateDocsSelection",
+    "onView:logos.chat"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "logos.openChat",
+        "title": "Logos: Open Chat"
+      },
+      {
+        "command": "logos.reviewSelection",
+        "title": "Logos: Review Selection"
+      },
+      {
+        "command": "logos.refactorSelection",
+        "title": "Logos: Refactor Selection"
+      },
+      {
+        "command": "logos.explainSelection",
+        "title": "Logos: Explain Selection"
+      },
+      {
+        "command": "logos.generateDocsSelection",
+        "title": "Logos: Generate Docs for Selection"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "logos.reviewSelection",
+          "group": "navigation@1",
+          "when": "editorHasSelection"
+        },
+        {
+          "command": "logos.refactorSelection",
+          "group": "navigation@2",
+          "when": "editorHasSelection"
+        },
+        {
+          "command": "logos.explainSelection",
+          "group": "navigation@3",
+          "when": "editorHasSelection"
+        },
+        {
+          "command": "logos.generateDocsSelection",
+          "group": "navigation@4",
+          "when": "editorHasSelection"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "logos.openChat"
+        },
+        {
+          "command": "logos.reviewSelection"
+        },
+        {
+          "command": "logos.refactorSelection"
+        },
+        {
+          "command": "logos.explainSelection"
+        },
+        {
+          "command": "logos.generateDocsSelection"
+        }
+      ]
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "logos",
+          "title": "Logos",
+          "icon": "media/logo.svg"
+        }
+      ]
+    },
+    "views": {
+      "logos": [
+        {
+          "id": "logos.chat",
+          "name": "Chat"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Logos",
+      "properties": {
+        "logos.defaultModel": {
+          "type": "string",
+          "default": "qwen2.5-coder:7b",
+          "description": "Default model to use when role is not specified."
+        },
+        "logos.writerModel": {
+          "type": "string",
+          "default": "llama3.1:8b",
+          "description": "Model used for writing assistance."
+        },
+        "logos.coderModel": {
+          "type": "string",
+          "default": "qwen2.5-coder:7b",
+          "description": "Model used for code-focused interactions."
+        },
+        "logos.scratchModel": {
+          "type": "string",
+          "default": "phi3:3.8b",
+          "description": "Model used for brainstorming or scratchpad interactions."
+        },
+        "logos.apiBaseUrl": {
+          "type": "string",
+          "default": "http://localhost:11434",
+          "description": "Base URL for the local Ollama API."
+        },
+        "logos.maxInputChars": {
+          "type": "number",
+          "default": 20000,
+          "description": "Maximum number of characters to send to the model."
+        },
+        "logos.severityGate": {
+          "type": "string",
+          "enum": ["S1", "S1S2", "off"],
+          "default": "S1",
+          "description": "Severity levels to highlight for review responses."
+        },
+        "logos.enableStreaming": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable streaming responses in chat."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -w -p ./",
+    "test": "npm run compile && tsc -p ./tsconfig.test.json && node ./out/test/runTest.js",
+    "package": "vsce package"
+  },
+  "devDependencies": {
+    "@types/glob": "^8.1.0",
+    "@types/mocha": "^10.0.6",
+    "@types/node": "^18.19.34",
+    "@types/vscode": "^1.85.0",
+    "@vscode/test-electron": "^2.3.6",
+    "glob": "^10.4.1",
+    "mocha": "^10.3.0",
+    "rimraf": "^5.0.5",
+    "typescript": "^5.4.5"
+  },
+  "dependencies": {
+    "diff": "^5.2.0"
+  }
+}
