@@ -25,6 +25,17 @@ interface InsertMessagePayload {
   text: string;
 }
 
+interface CopyMessagePayload {
+  type: 'copy';
+  text: string;
+}
+
+type IncomingMessage =
+  | ChatMessagePayload
+  | ClearMessagePayload
+  | InsertMessagePayload
+  | CopyMessagePayload
+  | { type: 'ready' };
 type IncomingMessage = ChatMessagePayload | ClearMessagePayload | InsertMessagePayload | { type: 'ready' };
 
 const HISTORY_KEY = 'logos.chatHistory';
@@ -91,6 +102,10 @@ export class LogosPanel implements vscode.WebviewViewProvider {
       case 'insert':
         await this.insertIntoEditor(message.text);
         break;
+      case 'copy':
+        await this.copyToClipboard(message.text);
+        break;
+
       case 'ready':
         this.postState();
         break;
@@ -119,6 +134,22 @@ export class LogosPanel implements vscode.WebviewViewProvider {
     }
 
     let assistantResponse = '';
+    const streamingEnabled = this.config.get().enableStreaming;
+    try {
+      const responseText = await this.router.chat({
+        role: message.role,
+        overrideModel: message.overrideModel,
+        history: this.history.map((entry) => ({ role: entry.role, content: entry.content })),
+        stream: streamingEnabled,
+        onToken: streamingEnabled
+          ? (token) => {
+              assistantResponse += token;
+              this.view?.webview.postMessage({ type: 'chatStream', token });
+            }
+          : undefined,
+      });
+      assistantResponse = responseText;
+
     try {
       await this.router.chat({
         role: message.role,
@@ -130,6 +161,7 @@ export class LogosPanel implements vscode.WebviewViewProvider {
           this.view?.webview.postMessage({ type: 'chatStream', token });
         },
       });
+
     } catch (error) {
       const messageText = error instanceof Error ? error.message : String(error);
       vscode.window.showErrorMessage(`Logos chat failed: ${messageText}`);
@@ -164,6 +196,15 @@ export class LogosPanel implements vscode.WebviewViewProvider {
       const position = editor.selection.active;
       builder.insert(position, text);
     });
+  }
+
+  private async copyToClipboard(text: string): Promise<void> {
+    if (!text.trim()) {
+      vscode.window.showInformationMessage('Logos: Nothing to copy.');
+      return;
+    }
+    await vscode.env.clipboard.writeText(text);
+    vscode.window.showInformationMessage('Logos: Response copied to clipboard.');
   }
 
   private persistHistory(): void {

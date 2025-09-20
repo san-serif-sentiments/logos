@@ -31,6 +31,16 @@ npm run compile
 1. Open the folder in VS Code.
 2. Press <kbd>F5</kbd> to launch the Extension Development Host.
 
+### Local Quickstart Checklist
+
+1. **Clone & install** – grab this repository and install dependencies inside `logos-vscode/` with `npm install`.
+2. **Start Ollama** – run `ollama serve` in a separate terminal and make sure `ollama list` shows the pulled models.
+3. **Build once** – execute `npm run compile` to emit the TypeScript build into `out/`.
+4. **Launch the extension** – open the folder in VS Code and press <kbd>F5</kbd> to spin up an Extension Development Host.
+5. **Verify connectivity** – in the dev host, run **Logos: Open Chat**, send a short prompt (e.g., “summarize this file”), and confirm tokens stream in. If nothing appears, check the Output panel for connection guidance.
+6. **Optional tests** – run `npm test` after installing [`@vscode/test-electron`](https://code.visualstudio.com/api/working-with-extensions/testing-extension) to execute the smoke suite.
+
+
 ## Configuration
 
 Open **Settings → Extensions → Logos** or edit your `settings.json`.

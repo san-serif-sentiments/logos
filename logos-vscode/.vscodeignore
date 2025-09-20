@@ -1,5 +1,15 @@
 .vscode/**
 .git/**
+node_modules/**
+test/**
+scripts/**
+out/test/**
+src/**/*.ts
+src/**/*.tsx
+src/**/*.ts.map
+src/**/*.d.ts
+**/*.tsbuildinfo
+**/*.map
 src/**
 test/**
 scripts/**
