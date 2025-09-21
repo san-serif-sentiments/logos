@@ -1,3 +1,4 @@
+import { before, describe, it } from 'mocha';
 import * as assert from 'assert';
 import * as vscode from 'vscode';
 import { ConfigManager } from '../src/config';
@@ -28,8 +29,8 @@ class MockOllamaClient extends OllamaClient {
   }
 }
 
-suite('Logos Extension', () => {
-  suiteSetup(async () => {
+describe('Logos Extension', () => {
+  before(async () => {
     const extension = vscode.extensions.getExtension('logos-local.logos');
     if (!extension) {
       throw new Error('Extension should exist');
@@ -37,7 +38,7 @@ suite('Logos Extension', () => {
     await extension.activate();
   });
 
-  test('commands are registered', async () => {
+  it('registers commands', async () => {
     const commands = await vscode.commands.getCommands(true);
     assert.ok(commands.includes('logos.reviewSelection'));
     assert.ok(commands.includes('logos.refactorSelection'));
@@ -46,7 +47,7 @@ suite('Logos Extension', () => {
     assert.ok(commands.includes('logos.openChat'));
   });
 
-  test('config manager exposes defaults', () => {
+  it('exposes config defaults', () => {
     const manager = new ConfigManager();
     const config = manager.get();
     assert.strictEqual(config.coderModel, 'qwen2.5-coder:7b');
@@ -54,7 +55,7 @@ suite('Logos Extension', () => {
     assert.strictEqual(config.apiBaseUrl, 'http://localhost:11434');
   });
 
-  test('router delegates to ollama client', async () => {
+  it('routes calls to the Ollama client', async () => {
     const manager = new ConfigManager();
     const client = new MockOllamaClient(manager);
     const router = new LogosRouter(manager, client);
@@ -65,7 +66,7 @@ suite('Logos Extension', () => {
     assert.strictEqual(review.summary, 'ok');
   });
 
-  test('open chat command resolves without error', async () => {
+  it('opens chat command without error', async () => {
     await vscode.commands.executeCommand('logos.openChat');
   });
 });
